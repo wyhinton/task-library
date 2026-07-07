@@ -1,0 +1,580 @@
+{
+  "name": "task-library",
+  "displayName": "Task Library",
+  "description": "Manage, group, tag, and share your VS Code tasks. Publish tasks from any tasks.json to a personal or shared library, run them anywhere, and pull them into other projects with one click.",
+  "version": "0.2.0",
+  "publisher": "wyhinton",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "tasks",
+    "tasks.json",
+    "snippets",
+    "library",
+    "productivity"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:jsonc",
+    "onLanguage:json",
+    "onStartupFinished"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js"
+  },
+  "dependencies": {
+    "jsonc-parser": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.3.9",
+    "mocha": "^10.3.0",
+    "typescript": "^5.4.0"
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "tasksLibrary",
+          "title": "Task Library",
+          "icon": "media/library.svg"
+        }
+      ]
+    },
+    "views": {
+      "tasksLibrary": [
+        {
+          "id": "tasksLibrary.view",
+          "name": "Task Library",
+          "icon": "media/library.svg",
+          "contextualTitle": "Task Library"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "tasksLibrary.view",
+        "when": "tasksLibrary.empty",
+        "contents": "No tasks in your library yet.\n[Import Tasks from Workspace](command:tasksLibrary.importFromWorkspace)\n[Generate Tasks from Project Files](command:tasksLibrary.generateFromProject)\nOr open a .vscode/tasks.json file and use the \"Add to Task Library\" code lens shown above each task.\nTo share your library across machines or with a team, point the [tasksLibrary.libraryFile](command:tasksLibrary.openSettings) setting at a synced file."
+      },
+      {
+        "view": "tasksLibrary.view",
+        "when": "!tasksLibrary.empty",
+        "contents": "No tasks match your search or filter.\n[Clear Search](command:tasksLibrary.clearSearch)\n[Clear Tag Filter](command:tasksLibrary.clearTagFilter)"
+      }
+    ],
+    "commands": [
+      {
+        "command": "tasksLibrary.refresh",
+        "title": "Refresh",
+        "category": "Task Library",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "tasksLibrary.quickOpen",
+        "title": "Quick Open Task…",
+        "category": "Task Library",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "tasksLibrary.runTask",
+        "title": "Run Task",
+        "category": "Task Library",
+        "icon": "$(play)"
+      },
+      {
+        "command": "tasksLibrary.filterByTag",
+        "title": "Filter by Tag…",
+        "category": "Task Library",
+        "icon": "$(filter)"
+      },
+      {
+        "command": "tasksLibrary.clearTagFilter",
+        "title": "Clear Tag Filter",
+        "category": "Task Library",
+        "icon": "$(filter-filled)"
+      },
+      {
+        "command": "tasksLibrary.search",
+        "title": "Search Tasks…",
+        "category": "Task Library",
+        "icon": "$(search)"
+      },
+      {
+        "command": "tasksLibrary.clearSearch",
+        "title": "Clear Search",
+        "category": "Task Library",
+        "icon": "$(search-stop)"
+      },
+      {
+        "command": "tasksLibrary.setSortOrder",
+        "title": "Sort Tasks By…",
+        "category": "Task Library",
+        "icon": "$(sort-precedence)"
+      },
+      {
+        "command": "tasksLibrary.importFromWorkspace",
+        "title": "Import Tasks from Workspace…",
+        "category": "Task Library",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "tasksLibrary.generateFromProject",
+        "title": "Generate Tasks from Project Files…",
+        "category": "Task Library",
+        "icon": "$(wand)"
+      },
+      {
+        "command": "tasksLibrary.addFromTerminal",
+        "title": "Save Terminal Command as Task…",
+        "category": "Task Library",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "tasksLibrary.importFromUrl",
+        "title": "Import Tasks from URL…",
+        "category": "Task Library",
+        "icon": "$(link)"
+      },
+      {
+        "command": "tasksLibrary.importFromFile",
+        "title": "Import Tasks from File…",
+        "category": "Task Library",
+        "icon": "$(file-add)"
+      },
+      {
+        "command": "tasksLibrary.exportTasks",
+        "title": "Export Tasks…",
+        "category": "Task Library",
+        "icon": "$(export)"
+      },
+      {
+        "command": "tasksLibrary.restoreSnapshot",
+        "title": "Restore Library from Snapshot…",
+        "category": "Task Library",
+        "icon": "$(history)"
+      },
+      {
+        "command": "tasksLibrary.openLibraryFile",
+        "title": "Open Library File",
+        "category": "Task Library",
+        "icon": "$(go-to-file)"
+      },
+      {
+        "command": "tasksLibrary.openSettings",
+        "title": "Open Settings",
+        "category": "Task Library"
+      },
+      {
+        "command": "tasksLibrary.insertTask",
+        "title": "Add to Workspace tasks.json",
+        "category": "Task Library",
+        "icon": "$(add)"
+      },
+      {
+        "command": "tasksLibrary.insertGroup",
+        "title": "Add All Tasks in Group to Workspace",
+        "category": "Task Library",
+        "icon": "$(add)"
+      },
+      {
+        "command": "tasksLibrary.previewTask",
+        "title": "Preview Task",
+        "category": "Task Library",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "tasksLibrary.compareWithWorkspace",
+        "title": "Compare with Workspace tasks.json",
+        "category": "Task Library",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "tasksLibrary.pinTask",
+        "title": "Pin Task",
+        "category": "Task Library",
+        "icon": "$(pin)"
+      },
+      {
+        "command": "tasksLibrary.unpinTask",
+        "title": "Unpin Task",
+        "category": "Task Library",
+        "icon": "$(pinned)"
+      },
+      {
+        "command": "tasksLibrary.editGroup",
+        "title": "Set Group…",
+        "category": "Task Library"
+      },
+      {
+        "command": "tasksLibrary.editTags",
+        "title": "Set Tags…",
+        "category": "Task Library"
+      },
+      {
+        "command": "tasksLibrary.editColor",
+        "title": "Set Color…",
+        "category": "Task Library"
+      },
+      {
+        "command": "tasksLibrary.editDescription",
+        "title": "Set Description…",
+        "category": "Task Library"
+      },
+      {
+        "command": "tasksLibrary.copyTaskJson",
+        "title": "Copy Task JSON",
+        "category": "Task Library"
+      },
+      {
+        "command": "tasksLibrary.deleteTask",
+        "title": "Remove from Library",
+        "category": "Task Library",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "tasksLibrary.renameGroup",
+        "title": "Rename Group…",
+        "category": "Task Library"
+      },
+      {
+        "command": "tasksLibrary.addFromEditor",
+        "title": "Add Task at Cursor to Library",
+        "category": "Task Library"
+      },
+      {
+        "command": "tasksLibrary.addAllFromEditor",
+        "title": "Add All Tasks in File to Library",
+        "category": "Task Library"
+      },
+      {
+        "command": "tasksLibrary._mergeTaskInputs",
+        "title": "Merge Task Inputs (internal)",
+        "category": "Task Library"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "tasksLibrary.quickOpen",
+        "key": "ctrl+alt+t",
+        "mac": "cmd+alt+t"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "tasksLibrary.quickOpen",
+          "when": "view == tasksLibrary.view",
+          "group": "navigation@0"
+        },
+        {
+          "command": "tasksLibrary.importFromWorkspace",
+          "when": "view == tasksLibrary.view",
+          "group": "navigation@1"
+        },
+        {
+          "command": "tasksLibrary.search",
+          "when": "view == tasksLibrary.view && !tasksLibrary.searchActive",
+          "group": "navigation@2"
+        },
+        {
+          "command": "tasksLibrary.clearSearch",
+          "when": "view == tasksLibrary.view && tasksLibrary.searchActive",
+          "group": "navigation@2"
+        },
+        {
+          "command": "tasksLibrary.filterByTag",
+          "when": "view == tasksLibrary.view && !tasksLibrary.tagFilterActive",
+          "group": "navigation@3"
+        },
+        {
+          "command": "tasksLibrary.clearTagFilter",
+          "when": "view == tasksLibrary.view && tasksLibrary.tagFilterActive",
+          "group": "navigation@3"
+        },
+        {
+          "command": "tasksLibrary.refresh",
+          "when": "view == tasksLibrary.view",
+          "group": "navigation@4"
+        },
+        {
+          "command": "tasksLibrary.setSortOrder",
+          "when": "view == tasksLibrary.view",
+          "group": "1_organize@1"
+        },
+        {
+          "command": "tasksLibrary.generateFromProject",
+          "when": "view == tasksLibrary.view",
+          "group": "2_capture@1"
+        },
+        {
+          "command": "tasksLibrary.addFromTerminal",
+          "when": "view == tasksLibrary.view",
+          "group": "2_capture@2"
+        },
+        {
+          "command": "tasksLibrary.importFromUrl",
+          "when": "view == tasksLibrary.view",
+          "group": "3_share@1"
+        },
+        {
+          "command": "tasksLibrary.importFromFile",
+          "when": "view == tasksLibrary.view",
+          "group": "3_share@2"
+        },
+        {
+          "command": "tasksLibrary.exportTasks",
+          "when": "view == tasksLibrary.view",
+          "group": "3_share@3"
+        },
+        {
+          "command": "tasksLibrary.openLibraryFile",
+          "when": "view == tasksLibrary.view",
+          "group": "4_manage@1"
+        },
+        {
+          "command": "tasksLibrary.restoreSnapshot",
+          "when": "view == tasksLibrary.view",
+          "group": "4_manage@2"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "tasksLibrary.runTask",
+          "when": "view == tasksLibrary.view && viewItem =~ /^libraryTask/",
+          "group": "inline@1"
+        },
+        {
+          "command": "tasksLibrary.insertTask",
+          "when": "view == tasksLibrary.view && viewItem =~ /^libraryTask/",
+          "group": "inline@2"
+        },
+        {
+          "command": "tasksLibrary.previewTask",
+          "when": "view == tasksLibrary.view && viewItem =~ /^libraryTask/",
+          "group": "inline@3"
+        },
+        {
+          "command": "tasksLibrary.insertGroup",
+          "when": "view == tasksLibrary.view && viewItem == libraryGroup",
+          "group": "inline@1"
+        },
+        {
+          "command": "tasksLibrary.runTask",
+          "when": "view == tasksLibrary.view && viewItem =~ /^libraryTask/",
+          "group": "1_actions@0"
+        },
+        {
+          "command": "tasksLibrary.insertTask",
+          "when": "view == tasksLibrary.view && viewItem =~ /^libraryTask/",
+          "group": "1_actions@1"
+        },
+        {
+          "command": "tasksLibrary.previewTask",
+          "when": "view == tasksLibrary.view && viewItem =~ /^libraryTask/",
+          "group": "1_actions@2"
+        },
+        {
+          "command": "tasksLibrary.compareWithWorkspace",
+          "when": "view == tasksLibrary.view && viewItem =~ /;outdated/",
+          "group": "1_actions@3"
+        },
+        {
+          "command": "tasksLibrary.pinTask",
+          "when": "view == tasksLibrary.view && viewItem =~ /;unpinned/",
+          "group": "1_actions@4"
+        },
+        {
+          "command": "tasksLibrary.unpinTask",
+          "when": "view == tasksLibrary.view && viewItem =~ /;pinned/",
+          "group": "1_actions@4"
+        },
+        {
+          "command": "tasksLibrary.editGroup",
+          "when": "view == tasksLibrary.view && viewItem =~ /^libraryTask/",
+          "group": "2_edit@1"
+        },
+        {
+          "command": "tasksLibrary.editTags",
+          "when": "view == tasksLibrary.view && viewItem =~ /^libraryTask/",
+          "group": "2_edit@2"
+        },
+        {
+          "command": "tasksLibrary.editColor",
+          "when": "view == tasksLibrary.view && viewItem =~ /^libraryTask/",
+          "group": "2_edit@3"
+        },
+        {
+          "command": "tasksLibrary.editDescription",
+          "when": "view == tasksLibrary.view && viewItem =~ /^libraryTask/",
+          "group": "2_edit@4"
+        },
+        {
+          "command": "tasksLibrary.copyTaskJson",
+          "when": "view == tasksLibrary.view && viewItem =~ /^libraryTask/",
+          "group": "3_copy@1"
+        },
+        {
+          "command": "tasksLibrary.exportTasks",
+          "when": "view == tasksLibrary.view && viewItem =~ /^libraryTask/",
+          "group": "3_copy@2"
+        },
+        {
+          "command": "tasksLibrary.deleteTask",
+          "when": "view == tasksLibrary.view && viewItem =~ /^libraryTask/",
+          "group": "4_danger@1"
+        },
+        {
+          "command": "tasksLibrary.insertGroup",
+          "when": "view == tasksLibrary.view && viewItem == libraryGroup",
+          "group": "1_actions@1"
+        },
+        {
+          "command": "tasksLibrary.renameGroup",
+          "when": "view == tasksLibrary.view && viewItem == libraryGroup",
+          "group": "2_edit@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "tasksLibrary.insertGroup",
+          "when": "false"
+        },
+        {
+          "command": "tasksLibrary.renameGroup",
+          "when": "false"
+        },
+        {
+          "command": "tasksLibrary.editGroup",
+          "when": "false"
+        },
+        {
+          "command": "tasksLibrary.editTags",
+          "when": "false"
+        },
+        {
+          "command": "tasksLibrary.editColor",
+          "when": "false"
+        },
+        {
+          "command": "tasksLibrary.editDescription",
+          "when": "false"
+        },
+        {
+          "command": "tasksLibrary.copyTaskJson",
+          "when": "false"
+        },
+        {
+          "command": "tasksLibrary.deleteTask",
+          "when": "false"
+        },
+        {
+          "command": "tasksLibrary.pinTask",
+          "when": "false"
+        },
+        {
+          "command": "tasksLibrary.unpinTask",
+          "when": "false"
+        },
+        {
+          "command": "tasksLibrary.compareWithWorkspace",
+          "when": "false"
+        },
+        {
+          "command": "tasksLibrary.openSettings",
+          "when": "false"
+        },
+        {
+          "command": "tasksLibrary._mergeTaskInputs",
+          "when": "false"
+        },
+        {
+          "command": "tasksLibrary.addFromEditor",
+          "when": "resourceFilename == tasks.json"
+        },
+        {
+          "command": "tasksLibrary.addAllFromEditor",
+          "when": "resourceFilename == tasks.json"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Task Library",
+      "properties": {
+        "tasksLibrary.libraryFile": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Path to the primary library JSON file. Leave empty to use a private file in the extension's global storage. Point it at a synced or version-controlled file (e.g. in a dotfiles repo, Dropbox, or a network share) to **share the library** across machines or with a team. Supports `~` for your home directory; relative paths resolve against the first workspace folder."
+        },
+        "tasksLibrary.extraLibraryFiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "markdownDescription": "Additional library JSON files (e.g. a shared team library next to your personal one). Tasks from these files appear in the tree with a source badge; edits are written back to the file the task came from. New tasks always go to the primary `#tasksLibrary.libraryFile#`."
+        },
+        "tasksLibrary.codeLens.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show \"Add to Task Library\" code lenses in tasks.json files."
+        },
+        "tasksLibrary.completion.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Suggest library tasks as completions inside the tasks array of tasks.json files."
+        },
+        "tasksLibrary.preflight.enabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Before inserting a task into a workspace, check that its command is on PATH, that `${workspaceFolder}` paths and the working directory exist, and that carried input ids don't clash — and warn if not."
+        },
+        "tasksLibrary.sortBy": {
+          "type": "string",
+          "enum": [
+            "name",
+            "recentlyUsed",
+            "mostUsed",
+            "recentlyAdded"
+          ],
+          "enumDescriptions": [
+            "Alphabetically by label",
+            "Most recently inserted or run first",
+            "Most inserted/run first",
+            "Most recently added to the library first"
+          ],
+          "default": "name",
+          "description": "How tasks are sorted in the Task Library view."
+        },
+        "tasksLibrary.snapshots.keep": {
+          "type": "number",
+          "default": 10,
+          "minimum": 1,
+          "description": "How many automatic library-file snapshots to keep per library file (restore via \"Task Library: Restore Library from Snapshot\")."
+        },
+        "tasksLibrary.statusBar.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show pinned tasks as one-click run buttons in the status bar."
+        },
+        "tasksLibrary.statusBar.maxItems": {
+          "type": "number",
+          "default": 3,
+          "minimum": 0,
+          "description": "Maximum number of pinned tasks shown in the status bar."
+        }
+      }
+    }
+  }
+}
