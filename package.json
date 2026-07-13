@@ -5,6 +5,15 @@
   "version": "0.2.0",
   "publisher": "wyhinton",
   "license": "MIT",
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wyhinton/task-library.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wyhinton/task-library/issues"
+  },
+  "homepage": "https://github.com/wyhinton/task-library#readme",
   "engines": {
     "vscode": "^1.85.0"
   },
